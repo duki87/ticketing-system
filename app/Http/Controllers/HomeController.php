@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
 
 class HomeController extends Controller
 {
@@ -23,6 +24,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        //GATE
+        if(Auth::user()->role() === 'admin') {
+            $tickets = 'admin tickets';
+        } else {        
+            $tickets = 'user tickets';
+        }
+        return view('home')->with(['tickets' => $tickets]);
     }
 }

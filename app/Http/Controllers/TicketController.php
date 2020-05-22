@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Ticket;
 use Illuminate\Http\Request;
+use Auth;
 
 class TicketController extends Controller
 {
@@ -14,7 +15,21 @@ class TicketController extends Controller
      */
     public function index()
     {
-        //
+        //USER GATE --CREATE LATER
+        if(Auth::user()->role() === 'user') {
+            $tickets = Ticket::where(['user_id' => Auth::id()])
+            ->with('replies')
+            ->get();           
+            return view('user.tickets')->with(['tickets' => $tickets]);
+        }
+        //ADMIN GATE --CREATE LATER
+        if(Auth::user()->role() === 'admin') {
+            $tickets = Ticket::with('user')
+            ->with('replies')
+            ->with('replies.admin')
+            ->paginate(10);
+            return view('admin.tickets')->with(['tickets' => $tickets]);
+        }        
     }
 
     /**
@@ -24,9 +39,9 @@ class TicketController extends Controller
      */
     public function create()
     {
-        //
+        //GATE FOR USER
+        return view('user.create-ticket');
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -35,7 +50,16 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //GATE FOR USER
+        $ticket = new Ticket([
+            'tck_no' => 129345566,
+            'user_id' => Auth::id(),
+            'subject' => $request->subject,
+            'description' => $request->description
+        ]);
+        if($ticket->save()) {
+            return redirect('/home');
+        }
     }
 
     /**
@@ -46,7 +70,16 @@ class TicketController extends Controller
      */
     public function show(Ticket $ticket)
     {
-        //
+        //USER GATE --CREATE LATER
+        if(Auth::user()->role() === 'user') {
+            //$tickets = Ticket::where(['user_id' => Auth::id()])->with('replies')->get();           
+            return view('user.ticket')->with(['ticket' => $ticket]);
+        }
+        //ADMIN GATE --CREATE LATER
+        if(Auth::user()->role() === 'admin') {
+            //$tickets = Ticket::paginate(10);
+            return view('admin.ticket')->with(['ticket' => $ticket]);
+        }  
     }
 
     /**
