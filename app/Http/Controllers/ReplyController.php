@@ -6,6 +6,7 @@ use App\Reply;
 use App\Ticket;
 use Auth;
 use Illuminate\Http\Request;
+use Gate;
 
 class ReplyController extends Controller
 {
@@ -37,15 +38,15 @@ class ReplyController extends Controller
      */
     public function store(Request $request, Ticket $ticket)
     {
-        //ADMIN GATE --ADD LATER
-        $reply = new Reply([
-            'admin_id' => Auth::id(),
-            'ticket_id' => $ticket->id,
-            'reply' => $request->reply
-        ]);
-        if($reply->save()) {
-            return redirect('/home');
+        if(Gate::allows('is-admin')) {
+            $reply = new Reply([
+                'admin_id' => Auth::id(),
+                'ticket_id' => $ticket->id,
+                'reply' => $request->reply
+            ]);
+            $reply->save();
         }
+        return redirect('/home');
     }
 
     /**

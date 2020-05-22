@@ -51,6 +51,8 @@ return [
 
         'mailgun' => [
             'transport' => 'mailgun',
+            'domain' => 'sandbox6cfe7bf3c63c4b9a8258248f252e677b.mailgun.org',
+            'secret' => '1bb7b0af209c35b9d0707d05966ada9b-e5e67e3e-cda08e77',
         ],
 
         'postmark' => [

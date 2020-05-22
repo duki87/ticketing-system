@@ -16,35 +16,42 @@
                     @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
-                            <thead>
+                          <thead>
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">TCK</th>
+                              <th scope="col">Predmet</th>
+                              <th scope="col">Opis</th>
+                              <th scope="col">Odgovori</th>
+                              <th scope="col">Datum kreiranja</th>
+                              <th scope="col">Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @foreach($tickets as $key => $ticket)
                               <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">TCK</th>
-                                <th scope="col">Predmet</th>
-                                <th scope="col">Opis</th>
-                                <th scope="col">Odgovori</th>
-                                <th scope="col">Datum kreiranja</th>
-                                <th scope="col">Status</th>
+                                  <th scope="row">{{ ++$key }}</th>
+                                  <td>
+                                    <a href="{{ route('ticket.show', ['ticket' => $ticket]) }}">
+                                      {{ $ticket['tck_no'] }}
+                                    </a>
+                                  </td>
+                                  <td>{{ $ticket['subject'] }}</td>
+                                  <td>{{ $ticket['description'] }}</td>
+                                  <td>{{ count($ticket['replies']) }}</td>
+                                  <td>{{ $ticket['created_at'] }}</td>
+                                  <td>
+                                      <span class="badge badge-{{ $ticket['status'] == 1 ? 'danger' : 'primary' }}">
+                                          {{ $ticket['status'] == 1 ? 'Otvoren' : 'Zatvoren' }}
+                                      </span >
+                                  </td>
                               </tr>
-                            </thead>
-                            <tbody>
-                              @foreach($tickets as $key => $ticket)
-                                <tr>
-                                    <th scope="row">{{ ++$key }}</th>
-                                    <td>{{ $ticket['tck_no'] }}</td>
-                                    <td>{{ $ticket['subject'] }}</td>
-                                    <td>{{ $ticket['description'] }}</td>
-                                    <td>{{ count($ticket['replies']) }}</td>
-                                    <td>{{ $ticket['created_at'] }}</td>
-                                    <td>
-                                        <span class="badge badge-{{ $ticket['status'] == 1 ? 'danger' : 'primary' }}">
-                                            {{ $ticket['status'] == 1 ? 'Otvoren' : 'Zatvoren' }}
-                                        </span >
-                                    </td>
-                                </tr>
-                              @endforeach
-                            </tbody>
-                          </table>
+                            @endforeach
+                          </tbody>
+                        </table>
+                        <div class="pagination">
+                          {{ $tickets->links() }}
+                        </div>
                     </div>
                 </div>
             </div>

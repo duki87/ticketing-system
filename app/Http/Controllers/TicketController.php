@@ -5,31 +5,38 @@ namespace App\Http\Controllers;
 use App\Ticket;
 use Illuminate\Http\Request;
 use Auth;
+use Carbon\Carbon;
+use Gate;
 
 class TicketController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($date = 'asc', $status = 0)
     {
-        //USER GATE --CREATE LATER
-        if(Auth::user()->role() === 'user') {
+        if(Gate::allows('is-user')) {
             $tickets = Ticket::where(['user_id' => Auth::id()])
             ->with('replies')
-            ->get();           
+            ->paginate(10);           
             return view('user.tickets')->with(['tickets' => $tickets]);
-        }
-        //ADMIN GATE --CREATE LATER
-        if(Auth::user()->role() === 'admin') {
+        }       
+        if(Gate::allows('is-admin')) {
+            $status = $status == 0 ? 'desc' : 'asc';
             $tickets = Ticket::with('user')
             ->with('replies')
             ->with('replies.admin')
+            ->orderBy('created_at', $date)
+            ->orderBy('status', $status)
             ->paginate(10);
             return view('admin.tickets')->with(['tickets' => $tickets]);
-        }        
+        }
     }
 
     /**
@@ -39,7 +46,6 @@ class TicketController extends Controller
      */
     public function create()
     {
-        //GATE FOR USER
         return view('user.create-ticket');
     }
     /**
@@ -50,15 +56,16 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
-        //GATE FOR USER
-        $ticket = new Ticket([
-            'tck_no' => 129345566,
-            'user_id' => Auth::id(),
-            'subject' => $request->subject,
-            'description' => $request->description
-        ]);
-        if($ticket->save()) {
-            return redirect('/home');
+        if(Gate::allows('is-user')) {
+            $ticket = new Ticket([
+                'tck_no' => 129345566,
+                'user_id' => Auth::id(),
+                'subject' => $request->subject,
+                'description' => $request->description
+            ]);
+            if($ticket->save()) {
+                return redirect('/home');
+            }
         }
     }
 
@@ -70,16 +77,15 @@ class TicketController extends Controller
      */
     public function show(Ticket $ticket)
     {
-        //USER GATE --CREATE LATER
-        if(Auth::user()->role() === 'user') {
-            //$tickets = Ticket::where(['user_id' => Auth::id()])->with('replies')->get();           
-            return view('user.ticket')->with(['ticket' => $ticket]);
+        if(Gate::allows('is-user')) {                  
+            if(Gate::allows('user-ticket', $ticket)) {
+                return view('user.ticket')->with(['ticket' => $ticket]);
+            }
         }
-        //ADMIN GATE --CREATE LATER
-        if(Auth::user()->role() === 'admin') {
-            //$tickets = Ticket::paginate(10);
+        if(Gate::allows('is-admin')) {
             return view('admin.ticket')->with(['ticket' => $ticket]);
         }  
+        return redirect('/home');
     }
 
     /**
@@ -102,7 +108,13 @@ class TicketController extends Controller
      */
     public function update(Request $request, Ticket $ticket)
     {
-        //
+        if(Gate::allows('is-admin')) {
+            $ticket->update([
+                'status' => $ticket->status == 1 ? 0 : 1,
+                'closed_at' => Carbon::now()->toDateTimeString()
+            ]);
+        }
+        return redirect('/home');
     }
 
     /**
@@ -115,4 +127,10 @@ class TicketController extends Controller
     {
         //
     }
+
+    public function statistics()
+    {
+        //$tic
+        return view('admin.statistics');
+    }  
 }
