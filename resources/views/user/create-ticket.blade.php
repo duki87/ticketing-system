@@ -9,12 +9,17 @@
                 <form method="POST" action="{{ route('ticket.store') }}">
                     @csrf
                     <div class="form-group">
-                        <label for="exampleFormControlInput1">Predmet</label>
-                        <input type="text" class="form-control" id="subject" name="subject" placeholder="Unesite predmet tiketa">
+                        <label for="subject">Predmet</label>
+                        <input required type="text" @error('subject') is-invalid @enderror class="form-control" id="subject" name="subject" placeholder="Unesite predmet tiketa">
+                        @error('subject')
+                          <span class="invalid-feedback" role="alert">
+                              <strong>{{ $message }}</strong>
+                          </span>
+                        @enderror
                       </div>
                       <div class="form-group">
-                        <label for="exampleFormControlSelect1">Sadržaj tiketa</label>
-                        <textarea class="form-control" name="description" id="" cols="30" rows="10"></textarea>
+                        <label for="description">Sadržaj tiketa</label>
+                        <textarea required class="form-control" name="description" id="" cols="30" rows="10"></textarea>
                       </div>
                       <div class="form-group">
                         <button class="btn btn-primary" type="submit">Pošalji</button>

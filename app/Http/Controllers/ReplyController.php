@@ -7,6 +7,8 @@ use App\Ticket;
 use Auth;
 use Illuminate\Http\Request;
 use Gate;
+use Illuminate\Support\Facades\Validator;
+use App\Notifications\NewReply;
 
 class ReplyController extends Controller
 {
@@ -38,13 +40,28 @@ class ReplyController extends Controller
      */
     public function store(Request $request, Ticket $ticket)
     {
-        if(Gate::allows('is-admin')) {
-            $reply = new Reply([
-                'admin_id' => Auth::id(),
-                'ticket_id' => $ticket->id,
-                'reply' => $request->reply
+        if($ticket->status == 1) {
+            $request->validate([
+                'reply' => ['required', 'string', 'min:5', 'max:255']
             ]);
-            $reply->save();
+            if(Gate::allows('is-admin')) {
+                $reply = new Reply([
+                    'admin_id' => Auth::id(),
+                    'ticket_id' => $ticket->id,
+                    'reply' => $request->reply
+                ]);
+                $reply->save();
+                $user = $ticket->user;
+                $user->notify(new NewReply($ticket, $user));
+            }
+            if(Gate::allows('is-user')) {
+                $reply = new Reply([
+                    'ticket_id' => $ticket->id,
+                    'reply' => $request->reply
+                ]);
+                $reply->save();
+            }
+            return redirect()->back();
         }
         return redirect('/home');
     }

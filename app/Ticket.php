@@ -20,6 +20,11 @@ class Ticket extends Model
         return $this->hasMany('App\Reply', 'ticket_id');
     } 
 
+    public function admin_replies()
+    {
+        return $this->hasMany('App\Reply', 'ticket_id')->whereNotNull(['admin_id']);
+    } 
+
     public function user()
     {
         return $this->hasOne('App\User', 'id', 'user_id');

@@ -36,14 +36,15 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'role' => ['required', 'string']
         ]);
+        $random = Str::random(10);
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make(Str::random(10)),
+            'password' => Hash::make($random),
             'role' => $request->role
         ]);
         if($user) {
-            $user->notify(new UserCreated($user));
+            $user->notify(new UserCreated($user->email, $random));
             return redirect()->route('home');
         }
     }

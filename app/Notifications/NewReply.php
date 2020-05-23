@@ -16,9 +16,10 @@ class NewReply extends Notification
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($ticket, $user)
     {
-        //
+        $this->ticket = $ticket;
+        $this->user = $user;
     }
 
     /**
@@ -41,9 +42,12 @@ class NewReply extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                    ->greeting('Zdravo, ' . $this->user['name'])
+                    ->line('Administrator je odgovorio na vaš tiket broj: ' . $this->ticket['tck_no'])
+                    ->line('Odgovor možete pogledati na sledećem linku:')
+                    ->action('Pogledaj tiket', route('ticket.show', ['ticket' => $this->ticket['id']]))
+                    ->line('Srdačan pozdrav,')            
+                    ->salutation('Vaš Ticketing System');
     }
 
     /**

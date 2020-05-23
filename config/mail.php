@@ -36,11 +36,11 @@ return [
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',
-            'host' => env('MAIL_HOST', 'smtp.gmail.com'),
-            'port' => env('MAIL_PORT', 465),
-            'encryption' => env('MAIL_ENCRYPTION', 'ssl'),
-            'username' => env('dusanmmm@gmail.com'),
-            'password' => env('waymqdbjbefbumcs'),
+            'host' => env('MAIL_HOST', 'smtp.mailtrap.io'),
+            'port' => env('MAIL_PORT', 2525),
+            'encryption' => env('MAIL_ENCRYPTION', 'null'),
+            'username' => env('MAIL_USERNAME', 'b611bbe267ca5e'),
+            'password' => env('MAIL_PASSWORD', '866616077952a2'),
             'timeout' => null,
             'auth_mode' => null,
         ],
@@ -50,9 +50,7 @@ return [
         ],
 
         'mailgun' => [
-            'transport' => 'mailgun',
-            'domain' => 'sandbox6cfe7bf3c63c4b9a8258248f252e677b.mailgun.org',
-            'secret' => '1bb7b0af209c35b9d0707d05966ada9b-e5e67e3e-cda08e77',
+            'transport' => 'mailgun'
         ],
 
         'postmark' => [

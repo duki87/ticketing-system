@@ -16,9 +16,10 @@ class UserCreated extends Notification
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($email, $password)
     {
-        $this->user = $user;
+        $this->email = $email;
+        $this->password = $password;
     }
 
     /**
@@ -43,8 +44,8 @@ class UserCreated extends Notification
         return (new MailMessage)
                     ->line('Vaš Ticketing System profil')
                     ->line('Podaci za pristup nalogu:')
-                    ->line('email: ' ) //$this->user['email']
-                    ->line('lozinka: ' ) //$this->user['password']
+                    ->line('email: ' . $this->email) //$this->user['email']
+                    ->line('lozinka: ' . $this->password) //$this->user['password']
                     ->line('Nakon što se ulogujete, možete izmeniti inicijalnu lozinku.')
                     ->action('Ticketing System Login', url('/login'));
     }

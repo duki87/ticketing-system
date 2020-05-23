@@ -2,62 +2,56 @@
 
 @section('content')
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <div class="card">              
-                <div class="card-header">
-                  Vaši tiketi
-                </div>
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                          <thead>
-                            <tr>
-                              <th scope="col">#</th>
-                              <th scope="col">TCK</th>
-                              <th scope="col">Predmet</th>
-                              <th scope="col">Opis</th>
-                              <th scope="col">Odgovori</th>
-                              <th scope="col">Datum kreiranja</th>
-                              <th scope="col">Status</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            @foreach($tickets as $key => $ticket)
-                              <tr>
-                                  <th scope="row">{{ ++$key }}</th>
-                                  <td>
-                                    <a href="{{ route('ticket.show', ['ticket' => $ticket]) }}">
-                                      {{ $ticket['tck_no'] }}
-                                    </a>
-                                  </td>
-                                  <td>{{ $ticket['subject'] }}</td>
-                                  <td>{{ $ticket['description'] }}</td>
-                                  <td>{{ count($ticket['replies']) }}</td>
-                                  <td>{{ $ticket['created_at'] }}</td>
-                                  <td>
-                                      <span class="badge badge-{{ $ticket['status'] == 1 ? 'danger' : 'primary' }}">
-                                          {{ $ticket['status'] == 1 ? 'Otvoren' : 'Zatvoren' }}
-                                      </span >
-                                  </td>
-                              </tr>
-                            @endforeach
-                          </tbody>
-                        </table>
-                        <div class="pagination">
-                          {{ $tickets->links() }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
+  <div class="row justify-content-center">
+      <div class="col-md-12">
+          <div class="card">              
+              <div class="card-header">
+                Tiketi korisnika: {{ Auth::user()->name }}
+              </div>
+              <div class="card-body">
+                  @if (session('status'))
+                      <div class="alert alert-success" role="alert">
+                          {{ session('status') }}
+                      </div>
+                  @endif
+                  <div class="table-responsive">
+                      <table class="table table-striped" id="datatable">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">TCK</th>
+                            <th scope="col">Predmet</th>
+                            <th scope="col">Opis</th>
+                            <th scope="col">Odgovori</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Datum kreiranja</th>
+                            <th scope="col">Datum zatvaranja</th>                     
+                          </tr>
+                        </thead>
+                    </table>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
 </div>
-
+<script>
+  $(document).ready(function() {
+    $('#datatable').DataTable({
+           processing: true,
+           serverSide: true,
+           ajax: "{{ url('tickets/load') }}",
+           columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'tck_no', name: 'tck_no' },
+                    { data: 'subject', name: 'subject' },
+                    { data: 'description', name: 'description' },
+                    { data: 'replies_no', name: 'replies_no' },
+                    { data: 'created_at', name: 'created_at' },
+                    { data: 'status', name: 'status' },        
+                    { data: 'closed_at', name: 'closed_at' }
+                 ]
+        });
+  });
+</script>
 @endsection

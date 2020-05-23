@@ -26,11 +26,12 @@ Route::group(['middleware' => ['role:user']], function () {
 
 Route::group(['middleware' => ['role:admin']], function () {
     Route::get('/add-user', 'UserController@add')->name('add-user');
-    Route::post('/add-user', 'UserController@create')->name('create-user');
-    Route::post('/add-reply/{ticket}', 'ReplyController@store')->name('reply.store');
-    Route::put('/update-ticket/{ticket}', 'TicketController@update')->name('ticket.update');
-    Route::get('/ticket/statistics', 'TicketController@statistics')->name('ticket.statistics');
+    Route::post('/add-user', 'UserController@create')->name('create-user');    
+    Route::get('/tickets-statistics', 'TicketController@statistics')->name('ticket.statistics');
 });
 
-Route::get('/home/{date?}/{status?}', 'TicketController@index')->name('home');
+Route::get('/home', 'TicketController@index')->name('home');
+Route::get('/tickets/load', 'TicketController@load')->name('ticket.load');
+Route::get('/tickets/{ticket}/close', 'TicketController@close')->name('ticket.close');
 Route::get('/tickets/{ticket}', 'TicketController@show')->name('ticket.show');
+Route::post('/add-reply/{ticket}', 'ReplyController@store')->name('reply.store');

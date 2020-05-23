@@ -10,11 +10,7 @@
                     <h2 class="d-inline">Podaci o tiketu</h2>
                     <div class="d-inline float-right">
                         @if(count($ticket['replies']) > 0 && $ticket['status'] == 1)
-                        <form action="{{ route('ticket.update', ['ticket' => $ticket]) }}" method="POST">
-                            <input type="hidden" name="_method" value="PUT"> 
-                            @csrf
-                            <button type="submit" class="btn btn-danger">Zatvori</button>
-                            </form>
+                            <a type="button" class="btn btn-danger" href="{{ route('ticket.close', ['ticket' => $ticket]) }}">Zatvori</a>
                         @elseif($ticket['status'] == 0)
                             <small>Tiket zatvoren {{ $ticket['closed_at'] }}</small>
                         @else
@@ -51,12 +47,12 @@
                         </li>
                         <li class="list-group-item">Datum kreiranja: 
                             <span class="float-right">
-                                {{ $ticket['created_at'] }}
+                                {{ date("d/m/Y H:i", strtotime($ticket['created_at'])) }}
                             </span>
                         </li>
                         <li class="list-group-item">Datum zatvaranja: 
                             <span class="float-right">
-                                {{ $ticket['closed_at'] == null ? '/' : $ticket['closed_at'] }}
+                                {{ $ticket['closed_at'] == null ? '/' : date("d/m/Y H:i", strtotime($ticket['closed_at'])) }}
                             </span>
                         </li>
                     </ul>
@@ -66,11 +62,11 @@
                             <hr>
                             <ul class="list-unstyled">
                                 @foreach($ticket['replies'] as $reply)
-                                    <li class="media bg-light p-2 mb-2">
+                                    <li class="media rounded bg-{{ $reply['admin'] == null ? 'light' : 'secondary text-white' }} p-2 mb-2">
                                         <div class="media-body">
                                         <h5 class="mt-0 mb-1">
-                                            Odgovorio: {{ $reply['admin']['name'] }}
-                                            <small class="float-right">{{ $reply['created_at'] }}</small>
+                                            Odgovorio: {{ $reply['admin'] == null ? Auth::user()->name : $reply['admin']['name'] }}
+                                            <small class="float-right">{{ date("d/m/Y H:i", strtotime($ticket['created_at'])) }}</small>
                                         </h5>
                                         {{ $reply['reply'] }}
                                         </div>
