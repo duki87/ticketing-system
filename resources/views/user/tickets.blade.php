@@ -38,20 +38,44 @@
 <script>
   $(document).ready(function() {
     $('#datatable').DataTable({
-           processing: true,
-           serverSide: true,
-           ajax: "{{ url('tickets/load') }}",
-           columns: [
-                    { data: 'DT_RowIndex', orderable: false, searchable: false },
-                    { data: 'tck_no', name: 'tck_no' },
-                    { data: 'subject', name: 'subject', searchable: true },
-                    { data: 'description', name: 'description', orderable: false, searchable: false },
-                    { data: 'replies_no', name: 'replies_no' },
-                    { data: 'created_at', name: 'created_at' },
-                    { data: 'status', name: 'status' },        
-                    { data: 'closed_at', name: 'closed_at' }
-                 ]
-        });
+            language: {
+                "sProcessing": "Učitava se...",
+                "sLengthMenu": "Prikaži _MENU_ tiketa po strani",
+                "sZeroRecords": "Nije pronađen nijedan rezultat.",
+                "sEmptyTable": "Trenutno nema nijednog tiketa.",
+                "sInfo": "Prikazano _START_ do _END_ od ukupno _TOTAL_ tiketa",
+                "sInfoEmpty": "Prikazano je 0 od 0 od ukupno 0 tiketa",
+                "sInfoFiltered": "(fitrirano od ukupno _MAX_ tiketa)",
+                "sInfoPostFix": "",
+                "sSearch": "Pretraga:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Učitava se...",
+                "oPaginate": {
+                  "sFirst": "Prva",
+                  "sLast": "Poslednja",
+                  "sNext": "Sledeća",
+                  "sPrevious": "Prethodna"
+                },
+                "oAria": {
+                  "sSortAscending": ": Sortiraj rastuće",
+                  "sSortDescending": ": Sortiraj opadajuće"
+              }
+          },
+          processing: true,
+          serverSide: true,
+          ajax: "{{ url('tickets/load') }}",
+          columns: [
+                  { data: 'DT_RowIndex', orderable: false, searchable: false },
+                  { data: 'tck_no', name: 'tck_no' },
+                  { data: 'subject', name: 'subject', searchable: true },
+                  { data: 'description', name: 'description', orderable: false, searchable: false },
+                  { data: 'replies_no', name: 'replies_no' },
+                  { data: 'status', name: 'status' },
+                  { data: 'created_at', name: 'created_at' },
+                  { data: 'closed_at', name: 'closed_at' }
+                ]
+      });
   });
 </script>
 @endsection

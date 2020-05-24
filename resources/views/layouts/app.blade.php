@@ -34,11 +34,7 @@
                         <!-- Left Side Of Navbar -->
                         <ul class="navbar-nav mr-auto">
                             @auth
-                                @can('is-admin')
-                                    <x-admin-navbar />
-                                @elsecan('is-user')
-                                    <x-user-navbar />
-                                @endcan
+                                <x-navbar />
                             @endauth
                         </ul>
 
@@ -61,12 +57,16 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                        @can('is-user')
+                                            <a class="dropdown-item" href="{{ route('user.edit') }}">
+                                                {{ __('Izmeni profil') }}
+                                            </a>
+                                        @endcan
                                         <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
                                                         document.getElementById('logout-form').submit();">
                                             {{ __('Logout') }}
                                         </a>
-
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                             @csrf
                                         </form>
