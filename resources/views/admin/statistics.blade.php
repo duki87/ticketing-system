@@ -18,10 +18,6 @@
 @endsection
 
 <script>
-    var data1 = @json($tickets_opened);
-    var data2 = @json($tickets_closed);
-    console.log(data1);
-    console.log(data2);
     window.onload = function () {
         var chart = new CanvasJS.Chart("chartContainer", {
             animationEnabled: true,

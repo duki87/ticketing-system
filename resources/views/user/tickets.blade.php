@@ -14,6 +14,7 @@
                           {{ session('status') }}
                       </div>
                   @endif
+                  <h5>Kliknite na TCK broj da vidite tiket i odgovore.</h5>
                   <div class="table-responsive">
                       <table class="table table-striped" id="datatable">
                         <thead>
@@ -74,7 +75,8 @@
                   { data: 'status', name: 'status' },
                   { data: 'created_at', name: 'created_at' },
                   { data: 'closed_at', name: 'closed_at' }
-                ]
+                ],
+          order:[1,'asc']
       });
   });
 </script>

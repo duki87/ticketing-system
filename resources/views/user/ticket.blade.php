@@ -68,12 +68,14 @@
                     @else
                         <h2 class="text-muted">Još uvek nema odgovora na tiket.</h2>
                     @endif
-                    @if($ticket['status'] == 1 && count($ticket['replies']) > 0)
+                    @if($ticket['status'] == 1 && count($ticket->admin_replies) > 0)
                         <div>
                             <h2>Dodaj odgovor</h2>
                             <hr>
                             <x-reply :ticket="$ticket" :errors="$errors ?? ''" />
                         </div>
+                    @elseif(count($ticket->admin_replies) == 0) 
+                        <h2 class="text-muted">Čeka se odgovor admina.</h2>
                     @else 
                         <h2 class="text-muted">Tiket je zatvoren i nije moguće dodavati odgovore.</h2>
                     @endif  

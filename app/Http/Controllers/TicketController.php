@@ -138,7 +138,7 @@ class TicketController extends Controller
                     }
                 }
                 foreach($tickets_closed_m as $ticket) {
-                    if((int)(Carbon::parse($ticket->created_at)->format('d')) == $i) {
+                    if((int)(Carbon::parse($ticket->closed_at)->format('d')) == $i) {
                         $tickets_closed++;
                     }
                 }
@@ -209,7 +209,7 @@ class TicketController extends Controller
                 })
                 ->editColumn('closed_at', function (Ticket $ticket) {
                     if($ticket->status == 0) {
-                        $closed_at = '<small>Tiket je zatvoren <br>' . date("d/m/Y", strtotime($ticket->created_at)) . '</small>';
+                        $closed_at = '<small>Tiket je zatvoren <br>' . date("d/m/Y", strtotime($ticket->closed_at)) . '</small>';
                     } elseif(count($ticket->replies) > 0 && $ticket->status == 1) {
                         $closed_at = '<a type="button" class="btn btn-danger" href="'.route('ticket.close', $ticket).'">Zatvori</a>';
                     } else {
