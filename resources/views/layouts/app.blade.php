@@ -34,11 +34,11 @@
                         <!-- Left Side Of Navbar -->
                         <ul class="navbar-nav mr-auto">
                             @auth
-                                @if(Auth::user()->role() === 'admin')
+                                @can('is-admin')
                                     <x-admin-navbar />
-                                @else
+                                @elsecan('is-user')
                                     <x-user-navbar />
-                                @endif
+                                @endcan
                             @endauth
                         </ul>
 
@@ -79,6 +79,7 @@
             </nav>
 
             <main class="py-4">
+                <x-alert />
                 @yield('content')
             </main>
         </div>        

@@ -61,7 +61,7 @@ class ReplyController extends Controller
                 ]);
                 $reply->save();
             }
-            return redirect()->back();
+            return redirect()->back()->with(['type' => 'success', 'msg' => 'Uspešno ste dodali odgovor.']);
         }
         return redirect('/home');
     }

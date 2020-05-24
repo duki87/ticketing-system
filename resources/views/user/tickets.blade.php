@@ -42,10 +42,10 @@
            serverSide: true,
            ajax: "{{ url('tickets/load') }}",
            columns: [
-                    { data: 'id', name: 'id' },
+                    { data: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'tck_no', name: 'tck_no' },
-                    { data: 'subject', name: 'subject' },
-                    { data: 'description', name: 'description' },
+                    { data: 'subject', name: 'subject', searchable: true },
+                    { data: 'description', name: 'description', orderable: false, searchable: false },
                     { data: 'replies_no', name: 'replies_no' },
                     { data: 'created_at', name: 'created_at' },
                     { data: 'status', name: 'status' },        

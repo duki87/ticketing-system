@@ -24,12 +24,18 @@ class UserController extends Controller
         $this->middleware('auth');
     }
 
-    public function add()
+    public function create()
     {
-        return view('admin.add-user');
+        return view('admin.create-user');
     }
 
-    public function create(Request $request)
+    public function edit()
+    {
+        $user = Auth::user();
+        return view('user.edit-user')->with('user', $user);
+    }
+
+    public function store(Request $request)
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -45,7 +51,30 @@ class UserController extends Controller
         ]);
         if($user) {
             $user->notify(new UserCreated($user->email, $random));
-            return redirect()->route('home');
+            return redirect('/home')->with(['type' => 'success', 'msg' => 'Uspešno ste dodali novog korisnika.']);
         }
+    }
+
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id.',id'],
+            'password' => ['sometimes', 'nullable', 'min:8']
+        ]);
+        if($request->password) {
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password)
+            ]);
+        } else {
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email
+            ]);
+        }
+        return redirect('/home')->with(['type' => 'success', 'msg' => 'Uspešno ste izmenili svoje podatke.']);
     }
 }

@@ -48,14 +48,10 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'subject' => 'required|string|min:5|max:255',
-            'description' => 'required|string|max:255'
+        $request->validate([
+            'subject' => ['required', 'string', 'min:5'],
+            'description' => ['required', 'string', 'max:255']
         ]);
-        if($validator->fails()) {
-            $errors = $validator->errors();
-            return redirect()->back()->withErrors($errors)->withInput();
-        }
         if(Gate::allows('is-user')) {
             $ticket = new Ticket([
                 'tck_no' => $this->generate_tck_no(),
@@ -64,7 +60,7 @@ class TicketController extends Controller
                 'description' => $request->description
             ]);
             if($ticket->save()) {
-                return redirect('/home');
+                return redirect('/home')->with(['type' => 'success', 'msg' => 'Uspešno ste otvorili tiket.']);
             }
         }
     }
@@ -238,7 +234,7 @@ class TicketController extends Controller
                 ]);
             }
         }
-        return redirect('/home');
+        return redirect('/home')->with(['type' => 'success', 'msg' => 'Uspešno ste zatvorili tiket.']);
     }
 
     private function generate_tck_no()

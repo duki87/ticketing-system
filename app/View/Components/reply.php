@@ -4,16 +4,18 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class admin-tickets extends Component
+class reply extends Component
 {
+    public $ticket;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($ticket, $errors = null)
     {
-        //
+        $this->ticket = $ticket;
+        $this->errors = $errors;
     }
 
     /**
@@ -23,6 +25,6 @@ class admin-tickets extends Component
      */
     public function render()
     {
-        return view('components.admin-tickets');
+        return view('components.reply');
     }
 }

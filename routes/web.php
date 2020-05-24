@@ -17,16 +17,26 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+//Auth::routes();
+
+Auth::routes([
+    'register' => false
+]);
+
+Route::get('/register', function() {
+    return redirect()->back();
+});
 
 Route::group(['middleware' => ['role:user']], function () {
     Route::get('/tickets/create', 'TicketController@create')->name('ticket.create');
     Route::post('/tickets/store', 'TicketController@store')->name('ticket.store');
+    Route::get('/users/edit', 'UserController@edit')->name('user.edit');
+    Route::put('/users/update', 'UserController@update')->name('user.update');
 });
 
 Route::group(['middleware' => ['role:admin']], function () {
-    Route::get('/add-user', 'UserController@add')->name('add-user');
-    Route::post('/add-user', 'UserController@create')->name('create-user');    
+    Route::get('/users/create', 'UserController@create')->name('user.create');
+    Route::post('/users/store', 'UserController@store')->name('user.store'); 
     Route::get('/tickets-statistics', 'TicketController@statistics')->name('ticket.statistics');
 });
 
