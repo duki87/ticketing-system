@@ -62,9 +62,7 @@
             },
             error: function(xhr, statusText, err){
                 if(xhr.status === 500) {
-                    console.log(err);
-                    console.log(statusText);
-                    $('#error').append(statusText);
+                    $('#error').append(xhr.responseText);
                 } 
             }
         }); 

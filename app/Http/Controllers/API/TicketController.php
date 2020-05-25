@@ -98,7 +98,7 @@ class TicketController extends Controller
             <tr>
                 <td><a href="'.route('ticket.show', $ticket).'">'.$ticket->tck_no.'</a></td>
                 <td>'.$ticket->subject.'</td>
-                <td>'.$ticket->description.'</td>
+                <td>'.substr($ticket->description, 0, 15) . '...'.'</td>
                 <td>'.count($ticket->replies).'</td>
                 <td>'.strtotime($ticket->created_at).'</td>
                 <td>'.$status.'</td>       
