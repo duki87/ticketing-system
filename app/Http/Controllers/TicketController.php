@@ -73,9 +73,15 @@ class TicketController extends Controller
      */
     public function show(Ticket $ticket)
     {
+        $exist = Ticket::where(['id' => $ticket->id])->first();
+        if(!$exist) {
+            return redirect()->back()->with(['type' => 'danger', 'msg' => 'Ovaj tiket ne postoji.']);
+        }
         if(Gate::allows('is-user')) {                  
             if(Gate::allows('user-ticket', $ticket)) {
                 return view('user.ticket')->with(['ticket' => $ticket]);
+            } else {
+                return redirect()->back()->with(['type' => 'danger', 'msg' => 'Ovaj tiket ne pripada vama.']);
             }
         }
         if(Gate::allows('is-admin')) {
@@ -235,6 +241,11 @@ class TicketController extends Controller
             }
         }
         return redirect('/home')->with(['type' => 'success', 'msg' => 'Uspešno ste zatvorili tiket.']);
+    }
+
+    public function status()
+    {
+        return view('user.ticket-status');
     }
 
     private function generate_tck_no()

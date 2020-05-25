@@ -29,6 +29,7 @@ Route::get('/register', function() {
 
 Route::group(['middleware' => ['role:user']], function () {
     Route::get('/tickets/create', 'TicketController@create')->name('ticket.create');
+    Route::get('/tickets/status', 'TicketController@status')->name('ticket.status');
     Route::post('/tickets/store', 'TicketController@store')->name('ticket.store');
     Route::get('/users/edit', 'UserController@edit')->name('user.edit');
     Route::put('/users/update', 'UserController@update')->name('user.update');

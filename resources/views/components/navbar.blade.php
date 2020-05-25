@@ -5,6 +5,9 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ route('ticket.create') }}">Otvori tiket</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('ticket.status') }}">Proveri status tiketa</a>
+    </li>
 @endcan
 
 @can('is-admin')

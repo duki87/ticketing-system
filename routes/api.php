@@ -22,4 +22,5 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::apiResources([   
         'tickets'    => 'API\TicketController',
     ]);
+    Route::get('tickets/{tck_no}/{user}/status', 'API\TicketController@check_ticket_status')->name('api.ticket.status');
 });

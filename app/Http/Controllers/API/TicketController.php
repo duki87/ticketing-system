@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Ticket;
+use App\User;
 use Illuminate\Http\Request;
 use Auth;
 use Carbon\Carbon;
@@ -13,12 +14,6 @@ use Illuminate\Support\Facades\Validator;
 
 class TicketController extends Controller
 {
-
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function index(Request $request)
     {
         if($request->ajax()) {
@@ -31,6 +26,9 @@ class TicketController extends Controller
                 ->addColumn('replies_no', function (Ticket $ticket) {
                     return count($ticket->replies);
                 })
+                ->editColumn('description', function (Ticket $ticket) {
+                    return (substr($ticket->description, 0, 10) . '...');
+                })
                 ->editColumn('tck_no', function (Ticket $ticket) {
                     return '<a href="'.route('ticket.show', $ticket).'">'. $ticket->tck_no .'</a>';
                 })
@@ -42,7 +40,7 @@ class TicketController extends Controller
                 })
                 ->editColumn('closed_at', function (Ticket $ticket) {
                     if($ticket->status == 0) {
-                        $closed_at = '<small>' . date("d-m-Y", strtotime($ticket->created_at)) . '</small>';
+                        $closed_at = '<small>' . date("d/m/Y", strtotime($ticket->created_at)) . '</small>';
                     } else {
                         $closed_at = '/';
                     }
@@ -69,9 +67,12 @@ class TicketController extends Controller
                 ->editColumn('created_at', function (Ticket $ticket) {
                     return date("d/m/Y", strtotime($ticket->created_at));
                 })
+                ->editColumn('description', function (Ticket $ticket) {
+                    return (substr($ticket->description, 0, 10) . '...');
+                })
                 ->editColumn('closed_at', function (Ticket $ticket) {
                     if($ticket->status == 0) {
-                        $closed_at = '<small>Tiket je zatvoren ' . date("d/m/Y", strtotime($ticket->created_at)) . '</small>';
+                        $closed_at = '<small>Tiket je zatvoren <br>' . date("d/m/Y", strtotime($ticket->closed_at)) . '</small>';
                     } elseif(count($ticket->replies) > 0 && $ticket->status == 1) {
                         $closed_at = '<a type="button" class="btn btn-danger" href="'.route('ticket.close', $ticket).'">Zatvori</a>';
                     } else {
@@ -84,5 +85,25 @@ class TicketController extends Controller
                 ->make(true);
             }
         }  
+    }
+
+    public function check_ticket_status($tck_no, User $user)
+    {
+        $ticket = Ticket::where(['tck_no' => $tck_no, 'user_id' => $user->id])->first();
+        if(!$ticket) {
+            return response('Ne postoji tiket sa ovim brojem koji pripada vama!', 500);
+        }
+        $status = $ticket->status == 1 ? '<span class="badge badge-danger">Otvoren</span >' : '<span class="badge badge-primary">Zatvoren '.strtotime($ticket->closed_at).'</span >';
+        $data = '
+            <tr>
+                <td><a href="'.route('ticket.show', $ticket).'">'.$ticket->tck_no.'</a></td>
+                <td>'.$ticket->subject.'</td>
+                <td>'.$ticket->description.'</td>
+                <td>'.count($ticket->replies).'</td>
+                <td>'.strtotime($ticket->created_at).'</td>
+                <td>'.$status.'</td>       
+            </tr>
+        ';
+        return response(['ticket' => $data]);
     }
 }

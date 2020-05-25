@@ -63,7 +63,7 @@ class ReplyController extends Controller
             }
             return redirect()->back()->with(['type' => 'success', 'msg' => 'Uspešno ste dodali odgovor.']);
         }
-        return redirect('/home');
+        return redirect()->back()->with(['type' => 'danger', 'msg' => 'Tiket je zatvoren i ne može se dodati odgovor.']);
     }
 
     /**

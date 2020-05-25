@@ -66,6 +66,12 @@
           processing: true,
           serverSide: true,
           ajax: "{{ url('tickets/load') }}",
+          // ajax: { 
+          //   "beforeSend": function (request) {
+          //    request.setRequestHeader("X-CSRF-TOKEN", '{{ csrf_token() }}');
+          //   },
+          //   "url": "{{ url('api/tickets') }}"    
+          // },
           columns: [
                   { data: 'DT_RowIndex', orderable: false, searchable: false },
                   { data: 'tck_no', name: 'tck_no' },
