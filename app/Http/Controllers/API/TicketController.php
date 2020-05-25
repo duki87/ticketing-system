@@ -30,7 +30,7 @@ class TicketController extends Controller
                     return (substr($ticket->description, 0, 10) . '...');
                 })
                 ->editColumn('tck_no', function (Ticket $ticket) {
-                    return '<a href="'.route('ticket.show', $ticket).'">'. $ticket->tck_no .'</a>';
+                    return '<a href="'.route('ticket.show', $ticket->tck_no).'">'. $ticket->tck_no .'</a>';
                 })
                 ->editColumn('status', function (Ticket $ticket) {
                     return $ticket->status == 1 ? '<span class="badge badge-danger">Otvoren</span >' : '<span class="badge badge-primary">Zatvoren</span >';
@@ -59,7 +59,7 @@ class TicketController extends Controller
                     return count($ticket->replies);
                 })
                 ->editColumn('tck_no', function (Ticket $ticket) {
-                    return '<a href="'.route('ticket.show', $ticket).'">'. $ticket->tck_no .'</a>';
+                    return '<a href="'.route('ticket.show', $ticket->tck_no).'">'. $ticket->tck_no .'</a>';
                 })
                 ->editColumn('status', function (Ticket $ticket) {
                     return $ticket->status == 1 ? '<span class="badge badge-danger">Otvoren</span >' : '<span class="badge badge-primary">Zatvoren</span >';
@@ -96,7 +96,7 @@ class TicketController extends Controller
         $status = $ticket->status == 1 ? '<span class="badge badge-danger">Otvoren</span >' : '<span class="badge badge-primary">Zatvoren '.strtotime($ticket->closed_at).'</span >';
         $data = '
             <tr>
-                <td><a href="'.route('ticket.show', $ticket).'">'.$ticket->tck_no.'</a></td>
+                <td><a href="'.route('ticket.show', $ticket->tck_no).'">'.$ticket->tck_no.'</a></td>
                 <td>'.$ticket->subject.'</td>
                 <td>'.substr($ticket->description, 0, 15) . '...'.'</td>
                 <td>'.count($ticket->replies).'</td>

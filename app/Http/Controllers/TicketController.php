@@ -71,23 +71,34 @@ class TicketController extends Controller
      * @param  \App\Ticket  $ticket
      * @return \Illuminate\Http\Response
      */
-    public function show(Ticket $ticket)
+    public function show($tck_no)
     {
-        $exist = Ticket::where(['id' => $ticket->id])->first();
-        if(!$exist) {
-            return redirect()->back()->with(['type' => 'danger', 'msg' => 'Ovaj tiket ne postoji.']);
-        }
-        if(Gate::allows('is-user')) {                  
+        if(Gate::allows('is-user')) {        
+            $ticket = Ticket::where(['tck_no' => $tck_no])
+                ->with('user')
+                ->with('replies')
+                ->with('admin_replies')
+                ->first();
+            if(!$ticket) {       
+                return redirect('/home')->with(['type' => 'danger', 'msg' => 'Tiket sa brojem '.$tck_no.' ne postoji.']);
+            }
             if(Gate::allows('user-ticket', $ticket)) {
                 return view('user.ticket')->with(['ticket' => $ticket]);
             } else {
-                return redirect()->back()->with(['type' => 'danger', 'msg' => 'Ovaj tiket ne pripada vama.']);
+                return redirect('/home')->with(['type' => 'danger', 'msg' => 'Ovaj tiket ne pripada vama.']);
             }
         }
         if(Gate::allows('is-admin')) {
+            $ticket = Ticket::where(['tck_no' => $tck_no])
+                ->with('user')
+                ->with('replies')
+                ->with('replies.admin')
+                ->first();
+            if(!$ticket) {       
+                return redirect('/home')->with(['type' => 'danger', 'msg' => 'Tiket sa brojem '.$tck_no.' ne postoji.']);
+            }
             return view('admin.ticket')->with(['ticket' => $ticket]);
-        }  
-        return redirect('/home');
+        }   
     }
 
     /**
@@ -173,7 +184,7 @@ class TicketController extends Controller
                     return (substr($ticket->description, 0, 10) . '...');
                 })
                 ->editColumn('tck_no', function (Ticket $ticket) {
-                    return '<a href="'.route('ticket.show', $ticket).'">'. $ticket->tck_no .'</a>';
+                    return '<a href="'.route('ticket.show', $ticket->tck_no).'">'. $ticket->tck_no .'</a>';
                 })
                 ->editColumn('status', function (Ticket $ticket) {
                     return $ticket->status == 1 ? '<span class="badge badge-danger">Otvoren</span >' : '<span class="badge badge-primary">Zatvoren</span >';
@@ -202,7 +213,7 @@ class TicketController extends Controller
                     return count($ticket->replies);
                 })
                 ->editColumn('tck_no', function (Ticket $ticket) {
-                    return '<a href="'.route('ticket.show', $ticket).'">'. $ticket->tck_no .'</a>';
+                    return '<a href="'.route('ticket.show', $ticket->tck_no).'">'. $ticket->tck_no .'</a>';
                 })
                 ->editColumn('status', function (Ticket $ticket) {
                     return $ticket->status == 1 ? '<span class="badge badge-danger">Otvoren</span >' : '<span class="badge badge-primary">Zatvoren</span >';
